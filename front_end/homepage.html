@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Device Store</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    header { /**/
+      background-color: #222;
+      color: #fff;
+      padding: 1em;
+      text-align: center;
+    }
+    nav {
+      background-color: #444;
+      display: flex;
+      justify-content: center;
+      gap: 2em;
+      padding: 1em;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+    }
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1em;
+      padding: 1em;
+      background-color: #fff;
+    }
+    .catalog {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1em;
+      padding: 1em;
+    }
+    .product {
+      background-color: #fff;
+      padding: 1em;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .product img {
+      width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Device Store</h1>
+  </header>
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">Mobiles</a>
+    <a href="#">Laptops</a>
+    <a href="#">Contact</a>
+  </nav>
+
+  <section class="filters">
+    <select id="brandFilter">
+      <option value="all">All Brands</option>
+      <option value="apple">Apple</option>
+      <option value="samsung">Samsung</option>
+      <option value="dell">Dell</option>
+    </select>
+    <select id="typeFilter">
+      <option value="all">All Types</option>
+      <option value="mobile">Mobile</option>
+      <option value="laptop">Laptop</option>
+    </select>
+    <select id="priceFilter">
+      <option value="all">All Prices</option>
+      <option value="low">Below $500</option>
+      <option value="mid">$500 - $1000</option>
+      <option value="high">Above $1000</option>
+    </select>
+  </section>
+
+  <section class="catalog" id="catalog">
+    <div class="product" data-brand="apple" data-type="mobile" data-price="high">
+      <img src="https://via.placeholder.com/200" alt="iPhone" />
+      <h3>iPhone 13</h3>
+      <p>$1099</p>
+    </div>
+    <div class="product" data-brand="samsung" data-type="mobile" data-price="mid">
+      <img src="https://via.placeholder.com/200" alt="Galaxy" />
+      <h3>Samsung Galaxy S21</h3>
+      <p>$799</p>
+    </div>
+    <div class="product" data-brand="dell" data-type="laptop" data-price="high">
+      <img src="https://via.placeholder.com/200" alt="Dell XPS" />
+      <h3>Dell XPS 13</h3>
+      <p>$1299</p>
+    </div>
+    <div class="product" data-brand="apple" data-type="laptop" data-price="high">
+      <img src="https://via.placeholder.com/200" alt="MacBook" />
+      <h3>MacBook Pro</h3>
+      <p>$1999</p>
+    </div>
+  </section>
+
+  <script>
+    const brandFilter = document.getElementById("brandFilter");
+    const typeFilter = document.getElementById("typeFilter");
+    const priceFilter = document.getElementById("priceFilter");
+    const products = document.querySelectorAll(".product");
+
+    function filterProducts() {
+      const brand = brandFilter.value;
+      const type = typeFilter.value;
+      const price = priceFilter.value;
+
+      products.forEach((product) => {
+        const matchesBrand = brand === "all" || product.dataset.brand === brand;
+        const matchesType = type === "all" || product.dataset.type === type;
+        const matchesPrice =
+          price === "all" ||
+          (price === "low" && parseInt(product.querySelector("p").textContent.slice(1)) < 500) ||
+          (price === "mid" && parseInt(product.querySelector("p").textContent.slice(1)) >= 500 && parseInt(product.querySelector("p").textContent.slice(1)) <= 1000) ||
+          (price === "high" && parseInt(product.querySelector("p").textContent.slice(1)) > 1000);
+
+        if (matchesBrand && matchesType && matchesPrice) {
+          product.style.display = "block";
+        } else {
+          product.style.display = "none";
+        }
+      });
+    }
+
+    brandFilter.addEventListener("change", filterProducts);
+    typeFilter.addEventListener("change", filterProducts);
+    priceFilter.addEventListener("change", filterProducts);
+  </script>
+</body>
+</html>
