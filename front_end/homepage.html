@@ -86,55 +86,57 @@
   </section>
 
   <section class="catalog" id="catalog">
-    <div class="product" data-brand="apple" data-type="mobile" data-price="high">
-      <img src="https://via.placeholder.com/200" alt="iPhone" />
-      <h3>iPhone 13</h3>
-      <p>$1099</p>
-    </div>
-    <div class="product" data-brand="samsung" data-type="mobile" data-price="mid">
-      <img src="https://via.placeholder.com/200" alt="Galaxy" />
-      <h3>Samsung Galaxy S21</h3>
-      <p>$799</p>
-    </div>
-    <div class="product" data-brand="dell" data-type="laptop" data-price="high">
-      <img src="https://via.placeholder.com/200" alt="Dell XPS" />
-      <h3>Dell XPS 13</h3>
-      <p>$1299</p>
-    </div>
-    <div class="product" data-brand="apple" data-type="laptop" data-price="high">
-      <img src="https://via.placeholder.com/200" alt="MacBook" />
-      <h3>MacBook Pro</h3>
-      <p>$1999</p>
-    </div>
+    <!--products will be rendered here -->
   </section>
+  
 
-  <script>
+
+
+  <script type="module">
+
+    import {productList} from './productsdata.js';
+   // import { Product } from "./product.js";
+
+    //rendering products script
+
+    const catalog = document.getElementById("catalog");
+
+    function displayProducts(products){
+
+    catalog.innerHTML = '';
+
+      products.forEach(product => {
+        
+        catalog.appendChild(product.render());
+
+      });
+
+  }
+
+
+
     const brandFilter = document.getElementById("brandFilter");
     const typeFilter = document.getElementById("typeFilter");
     const priceFilter = document.getElementById("priceFilter");
     const products = document.querySelectorAll(".product");
 
-    function filterProducts() {
+      function filterProducts() {
       const brand = brandFilter.value;
       const type = typeFilter.value;
       const price = priceFilter.value;
 
-      products.forEach((product) => {
-        const matchesBrand = brand === "all" || product.dataset.brand === brand;
-        const matchesType = type === "all" || product.dataset.type === type;
-        const matchesPrice =
-          price === "all" ||
-          (price === "low" && parseInt(product.querySelector("p").textContent.slice(1)) < 500) ||
-          (price === "mid" && parseInt(product.querySelector("p").textContent.slice(1)) >= 500 && parseInt(product.querySelector("p").textContent.slice(1)) <= 1000) ||
-          (price === "high" && parseInt(product.querySelector("p").textContent.slice(1)) > 1000);
-
-        if (matchesBrand && matchesType && matchesPrice) {
-          product.style.display = "block";
-        } else {
-          product.style.display = "none";
-        }
+      const filtered = productList.filter(p => {
+        const brandMatch = brand === "all" || p.brand === brand;
+        const typeMatch = type === "all" || p.type === type;
+        const priceMatch = price === "all" || p.priceCategory === price;
+        return brandMatch && typeMatch && priceMatch;
       });
+
+      displayProducts(filtered);
     }
+
+
+    displayProducts(productList);
 
     brandFilter.addEventListener("change", filterProducts);
     typeFilter.addEventListener("change", filterProducts);
