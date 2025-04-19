@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shopping Cart</title>
+
+  <!-- 
+    📌 READ THIS IF YOU WANT TO ADD PRODUCTS TO CART:
+    
+    - This page is designed to read from localStorage and display the cart items.
+    
+    - When a user clicks "Add to Cart" on the product page, create a cart item object like this:
+      {
+        name: "iPhone 13",
+        price: 1099,
+        img: "https://via.placeholder.com/200",
+        quantity: 1
+      }
+
+    - Then, save it to localStorage under the key 'cart'. If 'cart' already exists, append the new item (or update quantity if it already exists).
+
+    Example code to add item to cart from product.js:
+    ```js
+    const item = {
+      name: selectedProduct.product_name,
+      price: selectedProduct.product_price,
+      img: selectedProduct.product_img,
+      quantity: 1
+    };
+
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Optional: check if item already exists and update quantity
+    const existing = cart.find(p => p.name === item.name);
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      cart.push(item);
+    }
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+    ```
+
+    This page will automatically read from localStorage and display the cart.
+  -->
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #222;
+      color: #fff;
+      text-align: center;
+      padding: 1em;
+    }
+
+    .cart-container {
+      max-width: 1000px;
+      margin: 2em auto;
+      background-color: #fff;
+      padding: 1em;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      gap: 1em;
+      border-bottom: 1px solid #ccc;
+      padding: 1em 0;
+    }
+
+    .cart-item img {
+      width: 100px;
+      height: auto;
+      border-radius: 4px;
+    }
+
+    .item-details {
+      flex: 1;
+    }
+
+    .item-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.5em;
+    }
+
+    .total {
+      text-align: right;
+      font-size: 1.2em;
+      margin-top: 1em;
+    }
+
+    button {
+      padding: 0.5em 1em;
+      border: none;
+      background-color: #d9534f;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #c9302c;
+    }
+
+    input[type="number"] {
+      width: 60px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Your Shopping Cart</h1>
+  </header>
+
+  <div class="cart-container" id="cartContainer">
+    <!-- Cart items will be injected here -->
+  </div>
+
+  <script>
+    const cartContainer = document.getElementById('cartContainer');
+
+    // Get cart items from localStorage (or empty array if none)
+    let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Function to render the cart
+    function renderCart() {
+      cartContainer.innerHTML = '<h2>Items in Cart</h2>';
+
+      if (cartItems.length === 0) {
+        cartContainer.innerHTML += '<p>Your cart is empty.</p>';
+        return;
+      }
+
+      let total = 0;
+
+      cartItems.forEach((item, index) => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'cart-item';
+
+        itemDiv.innerHTML = `
+          <img src="${item.img}" alt="${item.name}" />
+          <div class="item-details">
+            <h3>${item.name}</h3>
+            <p>Price: $${item.price}</p>
+            <label>
+              Quantity:
+              <input type="number" min="1" value="${item.quantity}" data-index="${index}" class="qty-input"/>
+            </label>
+          </div>
+          <div class="item-actions">
+            <p>Subtotal: $${itemTotal}</p>
+            <button data-index="${index}" class="remove-btn">Remove</button>
+          </div>
+        `;
+
+        cartContainer.appendChild(itemDiv);
+      });
+
+      // Show total
+      const totalDiv = document.createElement('div');
+      totalDiv.className = 'total';
+      totalDiv.textContent = `Total: $${total}`;
+      cartContainer.appendChild(totalDiv);
+
+      // Add listeners after rendering
+      document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', removeItem);
+      });
+
+      document.querySelectorAll('.qty-input').forEach(input => {
+        input.addEventListener('change', updateQuantity);
+      });
+    }
+
+    // Remove item by index
+    function removeItem(e) {
+      const index = e.target.dataset.index;
+      cartItems.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cartItems));
+      renderCart();
+    }
+
+    // Update quantity and recalculate totals
+    function updateQuantity(e) {
+      const index = e.target.dataset.index;
+      const newQty = parseInt(e.target.value);
+
+      if (newQty < 1) return;
+
+      cartItems[index].quantity = newQty;
+      localStorage.setItem('cart', JSON.stringify(cartItems));
+      renderCart();
+    }
+
+    // Initial render
+    renderCart();
+  </script>
+</body>
+</html>
+
