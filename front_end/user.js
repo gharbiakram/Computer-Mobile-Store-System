@@ -22,17 +22,30 @@ export class User {
     save() {
       sessionStorage.setItem('user', JSON.stringify(this));
     }
-  
-    static load() {
+    
+    /**
+ * Loads the user data from sessionStorage.
+ * If user data exists, it creates a new User object using the saved data.
+ * If no data is found, it creates a default 'Guest' user and saves it.
+ */
+    static load(){
+       // Get the saved user data from sessionStorage
       const userData = sessionStorage.getItem('user');
       if (userData) {
+        // If data exists, parse it from JSON string to object
         const obj = JSON.parse(userData);
+        // Create a new User object using the saved name
         const user = new User(obj.name);
+         // Restore the cart from the saved object
         user.cart = obj.cart;
+        // Return the fully restored user
         return user;
       } else {
+         // If no data exists in sessionStorage, create a new default user
         const user = new User("Guest");
+        // Save the new user to sessionStorage
         user.save();
+        // Return the default user
         return user;
       }
     }
