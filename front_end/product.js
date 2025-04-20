@@ -1,11 +1,16 @@
+
+//product.js
 export class Product{
 
-     constructor(product_name, product_brand, product_type, product_price, product_img) {
+     constructor(product_id,product_name, product_brand, product_type, product_price, product_img,product_specs = {},product_images = {}) {
+    this.product_id = product_id;
     this.product_name = product_name;
     this.product_brand = product_brand;
     this.product_img = product_img;
     this.product_price = product_price;
     this.product_type = product_type;
+    this.product_specs = product_specs;
+    this.product_images = product_images;
   }
 
   get priceCategory() {
@@ -41,7 +46,7 @@ export class Product{
         // The following lines will be used to manipulate the custom attributes of the div like "data-brand" etc
         div.dataset.brand = this.product_brand;
 
-        div.dataset.price = this.product_price;
+        div.dataset.price = this.priceCategory;
 
         div.dataset.type = this.product_type;
 
@@ -49,6 +54,8 @@ export class Product{
   <img src="${this.product_img}" alt="Product Image" />
   <h3>${this.product_name}</h3>
   <p>$${this.product_price}</p>
+  <button class="details-btn" data-id="${this.product_id}">Details</button>
+
 `;
             return div;
 

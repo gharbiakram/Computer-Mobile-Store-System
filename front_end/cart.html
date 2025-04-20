@@ -28,7 +28,7 @@
   -->
 
   <style>
-    /* 🎨 Basic styling for cart page */
+   
     body {
       font-family: Arial, sans-serif;
       background-color: #f4f4f4;
@@ -116,27 +116,27 @@
 <body>
   <header>
     <h1>Your Shopping Cart</h1>
-    <!-- 🔙 Simple home button -->
+    <!--Simple home button -->
     <a href="homepage.html">
       <button class="secondary">Home</button>
     </a>
   </header>
 
-  <!-- 🛒 Cart items will be injected here -->
+  <!-- Cart items will be injected here -->
   <div class="cart-container" id="cartContainer">
     
   </div>
 
   <script type="module">
-    // ✅ Import User class from shared module
+    // Import User class from shared module
     import { User } from './user.js';
 
-    // 📦 Load current user and their cart
+    // Load current user and their cart
     const user = User.load();
     const cartItems = user.cart;
     const cartContainer = document.getElementById('cartContainer');
 
-    // 📄 Display cart items in HTML
+    // Display cart items in HTML
     function renderCart() {
       cartContainer.innerHTML = '<h2>Items in Cart</h2>';
 
@@ -151,7 +151,7 @@
         const itemTotal = item.price * item.quantity;
         total += itemTotal;
 
-        // 🧱 Create cart item element
+        // Create cart item element
         const itemDiv = document.createElement('div');
         itemDiv.className = 'cart-item';
 
@@ -174,31 +174,31 @@
         cartContainer.appendChild(itemDiv);
       });
 
-      // ➕ Add total display
+      // Add total display
       const totalDiv = document.createElement('div');
       totalDiv.className = 'total';
       totalDiv.textContent = `Total: $${total}`;
       cartContainer.appendChild(totalDiv);
 
-      // 🗑️ Add remove buttons functionality
+      // Add remove buttons functionality
       document.querySelectorAll('.remove-btn').forEach(btn => {
         btn.addEventListener('click', removeItem);
       });
 
-      // 🔁 Add quantity input update functionality
+      //  Add quantity input update functionality
       document.querySelectorAll('.qty-input').forEach(input => {
         input.addEventListener('change', updateQuantity);
       });
     }
 
-    // ❌ Remove an item from cart
+    // Remove an item from cart
     function removeItem(e) {
       const index = e.target.dataset.index;
       user.removeFromCart(index);
       renderCart(); // 🔄 Re-render after update
     }
 
-    // ✏️ Update quantity and recalculate
+    // Update quantity and recalculate
     function updateQuantity(e) {
       const index = e.target.dataset.index;
       const newQty = parseInt(e.target.value);
@@ -209,7 +209,7 @@
       renderCart();
     }
 
-    // 🚀 First render on page load
+    //  First render on page load
     renderCart();
   </script>
 </body>

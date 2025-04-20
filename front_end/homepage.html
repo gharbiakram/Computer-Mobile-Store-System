@@ -47,6 +47,8 @@
       border-radius: 8px;
       box-shadow: 0 0 5px rgba(0,0,0,0.1);
       text-align: center;
+      justify-content: center;
+      display: grid;
     }
     .product img {
       width: 100%;
@@ -101,17 +103,27 @@
 
     const catalog = document.getElementById("catalog");
 
-    function displayProducts(products){
+    function displayProducts(products) {
+  catalog.innerHTML = '';
 
-    catalog.innerHTML = '';
+  products.forEach(product => {
+    const productElement = product.render();
+    catalog.appendChild(productElement);
+  });
 
-      products.forEach(product => {
-        
-        catalog.appendChild(product.render());
+  // Add click listeners to "Details" buttons
+  document.querySelectorAll(".details-btn").forEach(button => {
+    button.addEventListener("click", (e) => {
+      const productId = e.target.dataset.id;
+      const selectedProduct = productList.find(p => p.product_id.toString() === productId);
+      localStorage.setItem("selectedProduct", JSON.stringify(selectedProduct));
 
-      });
+     // console.log(selectedProduct.product_specs);
 
-  }
+       window.location.href = "product.html";
+    });
+  });
+}
 
 
 
@@ -126,8 +138,8 @@
       const price = priceFilter.value;
 
       const filtered = productList.filter(p => {
-        const brandMatch = brand === "all" || p.brand === brand;
-        const typeMatch = type === "all" || p.type === type;
+        const brandMatch = brand === "all" || p.product_brand  === brand;
+        const typeMatch = type === "all" || p.product_type  === type;
         const priceMatch = price === "all" || p.priceCategory === price;
         return brandMatch && typeMatch && priceMatch;
       });
