@@ -6,46 +6,29 @@
   <title>Shopping Cart</title>
 
   <!-- 
-    📌 READ THIS IF YOU WANT TO ADD PRODUCTS TO CART:
+    📌 DEV NOTE FOR TEAM:
     
-    - This page is designed to read from localStorage and display the cart items.
+    ✅ This page uses the `User` class (see user.js), which stores the `cart` list.
+    ✅ The `User` instance is stored in `sessionStorage` so it's shared across tabs/pages for a session.
+    ✅ All cart logic (add/remove/update) is based on that list.
     
-    - When a user clicks "Add to Cart" on the product page, create a cart item object like this:
-      {
-        name: "iPhone 13",
-        price: 1099,
-        img: "https://via.placeholder.com/200",
-        quantity: 1
-      }
+    HOW TO ADD ITEMS TO CART FROM A PRODUCT PAGE:
+    1. Load the User with: `const user = User.load();`
+    2. Use `user.addToCart(item)` to add a product.
 
-    - Then, save it to localStorage under the key 'cart'. If 'cart' already exists, append the new item (or update quantity if it already exists).
-
-    Example code to add item to cart from product.js:
-    ```js
-    const item = {
-      name: selectedProduct.product_name,
-      price: selectedProduct.product_price,
-      img: selectedProduct.product_img,
+    Example item structure:
+    {
+      name: "iPhone 13",
+      price: 1099,
+      img: "https://via.placeholder.com/200",
       quantity: 1
-    };
-
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-    // Optional: check if item already exists and update quantity
-    const existing = cart.find(p => p.name === item.name);
-    if (existing) {
-      existing.quantity += 1;
-    } else {
-      cart.push(item);
     }
 
-    localStorage.setItem('cart', JSON.stringify(cart));
-    ```
-
-    This page will automatically read from localStorage and display the cart.
+    The cart page auto-renders this data.
   -->
 
   <style>
+    /* 🎨 Basic styling for cart page */
     body {
       font-family: Arial, sans-serif;
       background-color: #f4f4f4;
@@ -120,35 +103,40 @@
     input[type="number"] {
       width: 60px;
     }
+
     button.secondary {
       background-color: #222;
-      }
+    }
 
     button.secondary:hover {
       background-color: #31b0d5;
-   }
-
+    }
   </style>
 </head>
 <body>
   <header>
     <h1>Your Shopping Cart</h1>
+    <!-- 🔙 Simple home button -->
     <a href="homepage.html">
-        <button class="secondary">Home</button>
+      <button class="secondary">Home</button>
     </a>
   </header>
 
+  <!-- 🛒 Cart items will be injected here -->
   <div class="cart-container" id="cartContainer">
-    <!-- Cart items will be injected here -->
+    
   </div>
 
-  <script>
+  <script type="module">
+    // ✅ Import User class from shared module
+    import { User } from './user.js';
+
+    // 📦 Load current user and their cart
+    const user = User.load();
+    const cartItems = user.cart;
     const cartContainer = document.getElementById('cartContainer');
 
-    // Get cart items from localStorage (or empty array if none)
-    let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-
-    // Function to render the cart
+    // 📄 Display cart items in HTML
     function renderCart() {
       cartContainer.innerHTML = '<h2>Items in Cart</h2>';
 
@@ -163,6 +151,7 @@
         const itemTotal = item.price * item.quantity;
         total += itemTotal;
 
+        // 🧱 Create cart item element
         const itemDiv = document.createElement('div');
         itemDiv.className = 'cart-item';
 
@@ -185,45 +174,43 @@
         cartContainer.appendChild(itemDiv);
       });
 
-      // Show total
+      // ➕ Add total display
       const totalDiv = document.createElement('div');
       totalDiv.className = 'total';
       totalDiv.textContent = `Total: $${total}`;
       cartContainer.appendChild(totalDiv);
 
-      // Add listeners after rendering
+      // 🗑️ Add remove buttons functionality
       document.querySelectorAll('.remove-btn').forEach(btn => {
         btn.addEventListener('click', removeItem);
       });
 
+      // 🔁 Add quantity input update functionality
       document.querySelectorAll('.qty-input').forEach(input => {
         input.addEventListener('change', updateQuantity);
       });
     }
 
-    // Remove item by index
+    // ❌ Remove an item from cart
     function removeItem(e) {
       const index = e.target.dataset.index;
-      cartItems.splice(index, 1);
-      localStorage.setItem('cart', JSON.stringify(cartItems));
-      renderCart();
+      user.removeFromCart(index);
+      renderCart(); // 🔄 Re-render after update
     }
 
-    // Update quantity and recalculate totals
+    // ✏️ Update quantity and recalculate
     function updateQuantity(e) {
       const index = e.target.dataset.index;
       const newQty = parseInt(e.target.value);
-
       if (newQty < 1) return;
 
-      cartItems[index].quantity = newQty;
-      localStorage.setItem('cart', JSON.stringify(cartItems));
+      user.cart[index].quantity = newQty;
+      user.save(); // 💾 Save changes to sessionStorage
       renderCart();
     }
 
-    // Initial render
+    // 🚀 First render on page load
     renderCart();
   </script>
 </body>
 </html>
-
