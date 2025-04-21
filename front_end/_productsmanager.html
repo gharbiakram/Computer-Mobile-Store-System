@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            padding: 0;
+            margin: 0;
+        }
+
+        header {
+            background-color: black;
+            color: azure;
+            text-align: center;
+            padding: 2em;
+            font-size: large;
+        }
+
+        section {
+            background-color: gray;
+            justify-content: center;
+            display: grid;
+            padding: 1em;
+        }
+
+        .op-btn {
+            background-color: white;
+            border-radius: 10%;
+            padding: 1em;
+            margin: 0.5em;
+            cursor: pointer;
+        }
+
+        .op-btn:hover {
+            background-color: beige;
+        }
+
+        form {
+            background-color: #f2f2f2;
+            padding: 1em;
+            display: none;
+            margin: 1em auto;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+        }
+
+        form input, form textarea {
+            width: 100%;
+            margin-bottom: 1em;
+            padding: 0.5em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .product-list {
+            padding: 1em;
+            gap: 1em;
+            background-color: white;
+            justify-content: center;
+            display: flex;
+        }
+
+        .product{
+            background-color: #fff;
+      padding: 1em;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      text-align: center;
+      justify-content: center;
+      display: grid;
+
+        }
+
+        form input:hover,
+form textarea:hover,
+form button:hover {
+    border: 0.3em solid #000000; /* or any color you like */
+    outline: none;
+}
+
+form input,
+form textarea,
+form button {
+    transition: border 0.1s ease;
+}
+
+
+    </style>
+</head>
+<body>
+
+<header>
+    Product Management
+</header>
+
+<section>
+    <button class="op-btn" onclick="toggleForm('add')">Add Product</button>
+    <button class="op-btn" onclick="toggleForm('remove')">Remove Product</button>
+</section>
+
+<form id="productForm">
+    <input type="text" placeholder="Product ID" id="product_id" required>
+    <input type="text" placeholder="Name" id="product_name" required>
+    <input type="text" placeholder="Brand" id="product_brand" required>
+    <input type="text" placeholder="Type" id="product_type" required>
+    <input type="number" placeholder="Price" id="product_price" required>
+    <input type="url" placeholder="Main Image URL" id="product_img" required>
+    <textarea placeholder="Specs (key:value, one per line)" id="product_specs"></textarea>
+    <textarea placeholder="Color Images (color:url, one per line)" id="product_images"></textarea>
+    <button type="submit">Submit</button>
+</form>
+
+<form id="removeForm">
+    <input type="text" placeholder="Product ID to remove" id="remove_product_id" required>
+    <button type="submit">Remove</button>
+</form>
+
+
+<div class="product-list" id="productListContainer">
+    <!-- Product list display will go here -->
+</div>
+
+<script type="module">
+
+    import {productList} from './productsdata.js';
+    import {Product} from './product.js';
+
+    console.log(productList);
+
+
+    window.toggleForm = function(action) {
+    const addForm = document.getElementById("productForm");
+    const removeForm = document.getElementById("removeForm");
+
+    if (action === "add") {
+        addForm.style.display = "block";
+        removeForm.style.display = "none";
+    } else if (action === "remove") {
+        addForm.style.display = "none";
+        removeForm.style.display = "block";
+    }
+};
+
+
+    document.getElementById("productForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const id = document.getElementById("product_id").value;
+        const name = document.getElementById("product_name").value;
+        const brand = document.getElementById("product_brand").value;
+        const type = document.getElementById("product_type").value;
+        const price = parseFloat(document.getElementById("product_price").value);
+        const img = document.getElementById("product_img").value;
+
+        const specsText = document.getElementById("product_specs").value;
+        const specs = {};
+        specsText.split('\n').forEach(line => {
+            const [key, value] = line.split(":");
+            if (key && value) specs[key.trim()] = value.trim();
+        });
+
+        const imagesText = document.getElementById("product_images").value;
+        const images = {};
+        imagesText.split('\n').forEach(line => {
+            const [color, url] = line.split(":");
+            if (color && url) images[color.trim()] = url.trim();
+        });
+
+        const newProduct = new Product(id, name, brand, type, price, img, specs, images);
+        productList.push(newProduct);
+        displayProducts();
+        this.reset();
+        this.style.display = "none";
+    });
+
+    document.getElementById("removeForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const idToRemove = document.getElementById("remove_product_id").value.trim();
+
+    const index = productList.findIndex(p => p.product_id === idToRemove);
+    if (index !== -1) {
+        productList.splice(index, 1);
+        displayProducts();
+        alert("Product removed.");
+    } else {
+        alert("Product not found.");
+    }
+
+    this.reset();
+    this.style.display = "none";
+    });
+
+
+    function displayProducts() {
+    const container = document.getElementById("productListContainer");
+    container.innerHTML = "";
+    productList.forEach(p => {
+        container.appendChild(p.render());
+    });}
+
+
+    displayProducts();
+</script>
+</body>
+</html>
