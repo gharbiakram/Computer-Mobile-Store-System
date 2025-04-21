@@ -65,6 +65,7 @@
     <a href="#">Mobiles</a>
     <a href="#">Laptops</a>
     <a href="#">Contact</a>
+    <a href="cart.html">Shopping Cart</a>
   </nav>
 
   <section class="filters">
@@ -88,65 +89,63 @@
   </section>
 
   <section class="catalog" id="catalog">
-    <!--products will be rendered here -->
+    <!-- products will be rendered here -->
   </section>
-  
-
-
 
   <script type="module">
+    import { productList } from './productsdata.js';
 
-    import {productList} from './productsdata.js';
-   // import { Product } from "./product.js";
+    // List of test users for login verification (hidden from UI)
+    const testUsers = [
+      { fullName: 'John Doe', email: 'john@example.com', password: 'password123' },
+      { fullName: 'Jane Smith', email: 'jane@example.com', password: 'password456' },
+      { fullName: 'Alice Johnson', email: 'alice@example.com', password: 'password789' }
+    ];
 
-    //rendering products script
+    // Save the test users in localStorage for easy access during login verification in auth.html
+    localStorage.setItem("testUsers", JSON.stringify(testUsers));
 
+    // Rendering products script
     const catalog = document.getElementById("catalog");
 
     function displayProducts(products) {
-  catalog.innerHTML = '';
+      catalog.innerHTML = '';
 
-  products.forEach(product => {
-    const productElement = product.render();
-    catalog.appendChild(productElement);
-  });
+      products.forEach(product => {
+        const productElement = product.render();
+        catalog.appendChild(productElement);
+      });
 
-  // Add click listeners to "Details" buttons
-  document.querySelectorAll(".details-btn").forEach(button => {
-    button.addEventListener("click", (e) => {
-      const productId = e.target.dataset.id;
-      const selectedProduct = productList.find(p => p.product_id.toString() === productId);
-      localStorage.setItem("selectedProduct", JSON.stringify(selectedProduct));
-
-     // console.log(selectedProduct.product_specs);
-
-       window.location.href = "product.html";
-    });
-  });
-}
-
-
+      // Add click listeners to "Details" buttons
+      document.querySelectorAll(".details-btn").forEach(button => {
+        button.addEventListener("click", (e) => {
+          const productId = e.target.dataset.id;
+          const selectedProduct = productList.find(p => p.product_id.toString() === productId);
+          localStorage.setItem("selectedProduct", JSON.stringify(selectedProduct));
+          console.log(selectedProduct.product_specs);
+          window.location.href = "product.html";
+        });
+      });
+    }
 
     const brandFilter = document.getElementById("brandFilter");
     const typeFilter = document.getElementById("typeFilter");
     const priceFilter = document.getElementById("priceFilter");
-    const products = document.querySelectorAll(".product");
 
-      function filterProducts() {
+    function filterProducts() {
       const brand = brandFilter.value;
       const type = typeFilter.value;
       const price = priceFilter.value;
 
       const filtered = productList.filter(p => {
-        const brandMatch = brand === "all" || p.product_brand  === brand;
-        const typeMatch = type === "all" || p.product_type  === type;
+        const brandMatch = brand === "all" || p.product_brand === brand;
+        const typeMatch = type === "all" || p.product_type === type;
         const priceMatch = price === "all" || p.priceCategory === price;
         return brandMatch && typeMatch && priceMatch;
       });
 
       displayProducts(filtered);
     }
-
 
     displayProducts(productList);
 
@@ -156,3 +155,6 @@
   </script>
 </body>
 </html>
+
+
+

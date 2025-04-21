@@ -3,11 +3,17 @@ export class User {
       this.name = name;
       this.cart = [];
     }
-  
+  // Adds an item to the cart. If the item already exists, it updates the quantity.
     addToCart(item) {
-      this.cart.push(item);
+      const existing = this.cart.find(p => p.name === item.name);
+      if (existing) {
+        existing.quantity += item.quantity;
+      } else {
+        this.cart.push(item);
+      }
       this.save();
     }
+    
   
     removeFromCart(index) {
       this.cart.splice(index, 1);
@@ -20,7 +26,7 @@ export class User {
     }
   
     save() {
-      sessionStorage.setItem('user', JSON.stringify(this));
+      localStorage.setItem('user', JSON.stringify(this));
     }
     
     /**
@@ -30,7 +36,7 @@ export class User {
  */
     static load(){
        // Get the saved user data from sessionStorage
-      const userData = sessionStorage.getItem('user');
+      const userData = localStorage.getItem('user');
       if (userData) {
         // If data exists, parse it from JSON string to object
         const obj = JSON.parse(userData);

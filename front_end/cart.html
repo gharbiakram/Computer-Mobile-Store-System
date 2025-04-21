@@ -4,31 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shopping Cart</title>
-
-  <!-- 
-    📌 DEV NOTE FOR TEAM:
-    
-    ✅ This page uses the `User` class (see user.js), which stores the `cart` list.
-    ✅ The `User` instance is stored in `sessionStorage` so it's shared across tabs/pages for a session.
-    ✅ All cart logic (add/remove/update) is based on that list.
-    
-    HOW TO ADD ITEMS TO CART FROM A PRODUCT PAGE:
-    1. Load the User with: `const user = User.load();`
-    2. Use `user.addToCart(item)` to add a product.
-
-    Example item structure:
-    {
-      name: "iPhone 13",
-      price: 1099,
-      img: "https://via.placeholder.com/200",
-      quantity: 1
-    }
-
-    The cart page auto-renders this data.
-  -->
-
   <style>
-   
     body {
       font-family: Arial, sans-serif;
       background-color: #f4f4f4;
@@ -111,32 +87,38 @@
     button.secondary:hover {
       background-color: #31b0d5;
     }
+
+    .checkout-button {
+      background-color: #28a745;
+      margin-top: 10px;
+    }
+
+    .checkout-button:hover {
+      background-color: #218838;
+    }
+
+    .checkout-container {
+      text-align: right;
+    }
   </style>
 </head>
 <body>
   <header>
     <h1>Your Shopping Cart</h1>
-    <!--Simple home button -->
     <a href="homepage.html">
       <button class="secondary">Home</button>
     </a>
   </header>
 
-  <!-- Cart items will be injected here -->
-  <div class="cart-container" id="cartContainer">
-    
-  </div>
+  <div class="cart-container" id="cartContainer"></div>
 
   <script type="module">
-    // Import User class from shared module
     import { User } from './user.js';
 
-    // Load current user and their cart
     const user = User.load();
     const cartItems = user.cart;
     const cartContainer = document.getElementById('cartContainer');
 
-    // Display cart items in HTML
     function renderCart() {
       cartContainer.innerHTML = '<h2>Items in Cart</h2>';
 
@@ -151,7 +133,6 @@
         const itemTotal = item.price * item.quantity;
         total += itemTotal;
 
-        // Create cart item element
         const itemDiv = document.createElement('div');
         itemDiv.className = 'cart-item';
 
@@ -174,43 +155,46 @@
         cartContainer.appendChild(itemDiv);
       });
 
-      // Add total display
       const totalDiv = document.createElement('div');
       totalDiv.className = 'total';
       totalDiv.textContent = `Total: $${total}`;
       cartContainer.appendChild(totalDiv);
 
-      // Add remove buttons functionality
+      const checkoutBtn = document.createElement('div');
+      checkoutBtn.className = 'checkout-container';
+      checkoutBtn.innerHTML = `
+        <a href="checkout.html">
+          <button class="checkout-button">Proceed to Checkout</button>
+        </a>
+      `;
+      cartContainer.appendChild(checkoutBtn);
+
       document.querySelectorAll('.remove-btn').forEach(btn => {
         btn.addEventListener('click', removeItem);
       });
 
-      //  Add quantity input update functionality
       document.querySelectorAll('.qty-input').forEach(input => {
         input.addEventListener('change', updateQuantity);
       });
     }
 
-    // Remove an item from cart
     function removeItem(e) {
       const index = e.target.dataset.index;
       user.removeFromCart(index);
-      renderCart(); // 🔄 Re-render after update
+      renderCart();
     }
 
-    // Update quantity and recalculate
     function updateQuantity(e) {
       const index = e.target.dataset.index;
       const newQty = parseInt(e.target.value);
       if (newQty < 1) return;
-
       user.cart[index].quantity = newQty;
-      user.save(); // 💾 Save changes to sessionStorage
+      user.save();
       renderCart();
     }
 
-    //  First render on page load
     renderCart();
   </script>
 </body>
 </html>
+
