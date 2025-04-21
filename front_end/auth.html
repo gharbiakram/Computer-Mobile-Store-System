@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login / Signup</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 2em;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1em;
+    }
+
+    form {
+      display: none;
+      flex-direction: column;
+    }
+
+    form.active {
+      display: flex;
+    }
+
+    label {
+      margin-top: 10px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-top: 5px;
+    }
+
+    .roles {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 10px;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .switch-link {
+      text-align: center;
+      margin-top: 15px;
+      cursor: pointer;
+      color: #007bff;
+    }
+
+    .switch-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 id="formTitle">Login</h2>
+
+    <!-- Login Form -->
+    <form id="loginForm" class="active">
+      <label for="loginEmail">Email</label>
+      <input type="email" id="loginEmail" required>
+
+      <label for="loginPassword">Password</label>
+      <input type="password" id="loginPassword" required>
+
+      <div class="roles">
+        <label><input type="radio" name="loginRole" value="user" required> User</label>
+        <label><input type="radio" name="loginRole" value="admin" required> Admin</label>
+      </div>
+
+      <button type="submit">Login</button>
+    </form>
+
+    <!-- Signup Form -->
+    <form id="signupForm">
+      <label for="signupName">Full Name</label>
+      <input type="text" id="signupName" required>
+
+      <label for="signupEmail">Email</label>
+      <input type="email" id="signupEmail" required>
+
+      <label for="signupPassword">Password</label>
+      <input type="password" id="signupPassword" required>
+
+      <div class="roles">
+        <label><input type="radio" name="signupRole" value="user" required> User</label>
+        <label><input type="radio" name="signupRole" value="admin" required> Admin</label>
+      </div>
+
+      <button type="submit">Sign Up</button>
+    </form>
+
+    <div class="switch-link" id="switchForm">Don't have an account? Sign up</div>
+  </div>
+
+  <script>
+    const switchLink = document.getElementById("switchForm");
+    const loginForm = document.getElementById("loginForm");
+    const signupForm = document.getElementById("signupForm");
+    const formTitle = document.getElementById("formTitle");
+
+    // Toggle forms
+    switchLink.addEventListener("click", () => {
+      if (loginForm.classList.contains("active")) {
+        loginForm.classList.remove("active");
+        signupForm.classList.add("active");
+        formTitle.textContent = "Sign Up";
+        switchLink.textContent = "Already have an account? Login";
+      } else {
+        signupForm.classList.remove("active");
+        loginForm.classList.add("active");
+        formTitle.textContent = "Login";
+        switchLink.textContent = "Don't have an account? Sign up";
+      }
+    });
+
+    // Signup handler
+    signupForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("signupName").value;
+      const email = document.getElementById("signupEmail").value;
+      const password = document.getElementById("signupPassword").value;
+      const role = document.querySelector('input[name="signupRole"]:checked').value;
+
+      const userData = { name, email, password, role };
+      localStorage.setItem("userData", JSON.stringify(userData));
+
+      if (role === "user") {
+        window.location.href = "homepage.html";
+      } else {
+        alert("Admin signup successful! You can now log in.");
+        signupForm.reset();
+        signupForm.classList.remove("active");
+        loginForm.classList.add("active");
+        formTitle.textContent = "Login";
+        switchLink.textContent = "Don't have an account? Sign up";
+      }
+    });
+
+    // Login handler
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+      const role = document.querySelector('input[name="loginRole"]:checked').value;
+
+      const stored = JSON.parse(localStorage.getItem("userData"));
+      if (stored && stored.email === email && stored.password === password && stored.role === role) {
+        alert("Login successful!");
+        if (role === "user") {
+          window.location.href = "homepage.html";
+        } else {
+          alert("Welcome, Admin!");
+        }
+      } else {
+        alert("Invalid credentials or role.");
+      }
+    });
+
+     // Retrieve the test users stored in localStorage
+  const testUsers = JSON.parse(localStorage.getItem("testUsers"));
+
+// Function to handle the login process
+function handleLogin() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const user = testUsers.find(u => u.email === email && u.password === password);
+
+  if (user) {
+    localStorage.setItem("userData", JSON.stringify(user)); // Store user data in localStorage
+    alert("Login successful!");
+    window.location.href = "homepage.html"; // Redirect to homepage
+  } else {
+    alert("Invalid credentials. Please try again.");
+  }
+}
+  </script>
+</body>
+</html>
+
