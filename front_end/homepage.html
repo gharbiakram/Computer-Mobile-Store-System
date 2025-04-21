@@ -65,6 +65,7 @@
     <a href="#">Mobiles</a>
     <a href="#">Laptops</a>
     <a href="#">Contact</a>
+    <a href="cart.html">Shopping Cart</a>
   </nav>
 
   <section class="filters">
@@ -118,7 +119,8 @@
       const selectedProduct = productList.find(p => p.product_id.toString() === productId);
       localStorage.setItem("selectedProduct", JSON.stringify(selectedProduct));
 
-     // console.log(selectedProduct.product_specs);
+
+      console.log(selectedProduct.product_specs);
 
        window.location.href = "product.html";
     });

@@ -122,21 +122,20 @@
         </div>
 
         <div class="options">
-        
             <div class="option-group">
                 <label for="color">Color:</label>
-                <select id="color" onchange="updateImage()">
+                <select id="color">
                     <option value="black">Black</option>
                     <option value="blue">Blue</option>
                     <option value="red">Red</option>
                 </select>
             </div>
         </div>
-            <div style="display: flex; justify-content: center;">
 
-                <button class="add-to-cart" onclick="addToCart()">Add to Cart</button>
-
-            </div>
+        <!-- 🛠 Changed to use id for JS event listener (no inline onclick) -->
+        <div style="display: flex; justify-content: center;">
+            <button class="add-to-cart" id="addToCartBtn">Add to Cart</button>
+        </div>
 
         <div id="navbuttons">
             <button onclick="changeImage('prev')">Prev</button>
@@ -144,66 +143,71 @@
         </div>
     </section>
 
-    <script>
-        const images = {
-            black: 'https://via.placeholder.com/400/000000',
-            blue: 'https://via.placeholder.com/400/0000FF',
-            red: 'https://via.placeholder.com/400/FF0000'
-        };
-    
+    <!-- 📦 Module script block for logic -->
+    <script type="module">
+        import { User } from './user.js';
+
+        // ✅ Load product details from localStorage (previously selected product)
         const product = JSON.parse(localStorage.getItem("selectedProduct"));
-    
-        console.log(product);
+        const user = User.load(); // Load user with cart from localStorage
 
         if (product) {
+            // 🔧 Render product info on the page
             document.querySelector("h3").textContent = `${product.product_name}`;
             document.getElementById("price").textContent = `$${product.product_price.toFixed(2)}`;
-            document.getElementById("main-product-image").src = product.product_img || images.black;
-    
+            document.getElementById("main-product-image").src = product.product_img;
+
+            // 📋 Populate product specifications dynamically
             const specsDiv = document.querySelector(".product-specs");
             specsDiv.innerHTML = `<p style="display: grid; justify-content: center;"><strong>Specifications:</strong></p>`;
             Object.entries(product.product_specs).forEach(([key, value]) => {
-            const p = document.createElement("p");
-            p.textContent = `${key}: ${value}`;
-            specsDiv.appendChild(p);
+                const p = document.createElement("p");
+                p.textContent = `${key}: ${value}`;
+                specsDiv.appendChild(p);
             });
-    
-           
-    
-            // Update image when color changes
-            updateImage = function () {
+
+            // 🎨 Color change updates product image
+            document.getElementById('color').addEventListener('change', () => {
                 const color = document.getElementById('color').value;
-                document.getElementById('main-product-image').src = product.product_images[color] || images[color];
-            };
-    
-            
-    
-            addToCart = function () {
-                const storage = document.getElementById('storage').value;
+                document.getElementById('main-product-image').src = product.product_images[color];
+            });
+
+            // 🛒 Add to Cart functionality (attached after DOM is loaded)
+            document.getElementById('addToCartBtn').addEventListener('click', () => {
                 const color = document.getElementById('color').value;
-                const price = document.getElementById('price').textContent;
-                alert(`Added to cart: ${product.product_name}, ${storage}, ${color} - ${price}`);
-            };
+
+                const item = {
+                    name: product.product_name + ' - ' + color,
+                    price: product.product_price,
+                    img: product.product_images[color] || product.product_img,
+                    quantity: 1
+                };
+
+                user.addToCart(item); // Add item to user cart
+                alert("Item added to cart!");
+            });
+
         } else {
+            // ❌ If no product data found, show error message
             document.querySelector("section.product").innerHTML = "<h3>Product not found</h3>";
         }
-    
-        // Image navigation logic
+
+        // 🔄 Image carousel navigation
         let currentImageIndex = 0;
-        let imageUrls = Object.values(product?.product_images || images);
-    
-        function changeImage(direction) {
+        let imageUrls = Object.values(product?.product_images || []);
+
+        window.changeImage = function (direction) {
             if (!imageUrls.length) return;
-    
+
             if (direction === 'next') {
                 currentImageIndex = (currentImageIndex + 1) % imageUrls.length;
             } else {
                 currentImageIndex = (currentImageIndex - 1 + imageUrls.length) % imageUrls.length;
             }
-    
+
             document.getElementById('main-product-image').src = imageUrls[currentImageIndex];
-        }
+        };
     </script>
-    
 </body>
+
 </html>
