@@ -88,6 +88,20 @@ form button {
     transition: border 0.1s ease;
 }
 
+.nav-button{
+
+    background-color: #000000;
+    color: #f2f2f2;
+    margin-top: 3em;
+    border-radius: 10%;
+    
+}
+.nav-button:hover{
+
+    background-color: #ffffff;
+    color: #000000;
+}
+
 
     </style>
 </head>
@@ -95,7 +109,10 @@ form button {
 
 <header>
     Product Management
+    <br>
+    <button class="nav-button" onclick="window.location.href='_usermanagement.html'">Go to User Management</button>
 </header>
+
 
 <section>
     <button class="op-btn" onclick="toggleForm('add')">Add Product</button>
