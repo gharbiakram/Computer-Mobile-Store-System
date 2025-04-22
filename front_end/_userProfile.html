@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Profile</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .profile-container {
+      background: white;
+      border-radius: 12px;
+      padding: 30px 40px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 24px;
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: 500;
+      margin-bottom: 6px;
+      display: block;
+      color: #555;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      margin-bottom: 15px;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus {
+      border-color: #007BFF;
+      outline: none;
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      font-weight: 500;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .save {
+      background-color: #007BFF;
+      color: white;
+    }
+
+    .save:hover {
+      background-color: #0056b3;
+    }
+
+    .cart {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .cart:hover {
+      background-color: #218838;
+    }
+
+    .logout {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .logout:hover {
+      background-color: #c82333;
+    }
+
+    .message {
+      color: #28a745;
+      margin-top: 10px;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    @media (max-width: 480px) {
+      .btn-group {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="profile-container">
+    <h2>User Profile</h2>
+
+    <label for="username">Name</label>
+    <input type="text" id="username" placeholder="Enter your name" />
+    <div class="message" id="message"></div>
+
+    <div class="btn-group">
+      <button class="save" onclick="saveName()">Save</button>
+      <button class="cart" onclick="goToCart()">View Cart</button>
+      <button class="logout" onclick="logout()">Log Out</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { User } from './user.js';
+
+    // Load user from localStorage
+    const user = User.load();
+
+    // Pre-fill the username field
+    const usernameInput = document.getElementById('username');
+    const messageDiv = document.getElementById('message');
+    usernameInput.value = user.name;
+
+    // Save the updated name to localStorage
+    window.saveName = function () {
+      const newName = usernameInput.value.trim();
+      if (newName) {
+        user.name = newName;
+        user.save();
+        messageDiv.textContent = "Name updated successfully!";
+        setTimeout(() => messageDiv.textContent = "", 3000);
+      }
+    };
+
+    // Redirect to cart page
+    window.goToCart = function () {
+      window.location.href = 'cart.html';
+    };
+
+    // Clear localStorage and redirect to homepage
+    window.logout = function () {
+      localStorage.removeItem('user');
+      window.location.href = 'homepage.html';
+    };
+  </script>
+</body>
+</html>
