@@ -11,166 +11,235 @@
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f5f7fa;
+      background: linear-gradient(135deg, #e3f2fd, #f1f8e9);
       margin: 0;
       padding: 0;
+    }
+
+    header {
+      background-color: #1a1a1a;
+      color: white;
+      padding: 1.5em 1em;
+      text-align: center;
+      font-size: 1.8em;
+      font-weight: bold;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+
+    nav {
+      background-color: #333;
+      display: flex;
+      justify-content: center;
+      gap: 2em;
+      padding: 1em;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5em 1em;
+      transition: background-color 0.3s, color 0.3s;
+      border-radius: 6px;
+    }
+
+    nav a:hover {
+      background-color: #fff;
+      color: #000;
+    }
+
+    .profile-wrapper {
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: calc(100vh - 160px);
+      padding: 30px 20px;
     }
 
     .profile-container {
       background: white;
-      border-radius: 12px;
-      padding: 30px 40px;
-      max-width: 500px;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 600px;
       width: 100%;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      animation: slideUp 0.6s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
 
     h2 {
-      margin-top: 0;
-      font-size: 24px;
+      font-size: 28px;
       text-align: center;
-      color: #333;
-      margin-bottom: 20px;
+      color: #2c3e50;
+      margin-bottom: 25px;
     }
 
     label {
-      font-weight: 500;
+      font-weight: 600;
       margin-bottom: 6px;
       display: block;
-      color: #555;
+      color: #333;
     }
 
-    input[type="text"] {
+    input[type="text"], input[type="email"], input[type="tel"], input[type="number"] {
       width: 100%;
-      padding: 10px 12px;
+      padding: 12px;
       border: 1px solid #ccc;
-      border-radius: 6px;
+      border-radius: 10px;
       font-size: 16px;
-      margin-bottom: 15px;
-      transition: border-color 0.2s;
+      margin-bottom: 18px;
+      transition: border-color 0.3s;
     }
 
-    input[type="text"]:focus {
-      border-color: #007BFF;
+    input:focus {
+      border-color: #1976d2;
       outline: none;
+    }
+
+    input[readonly] {
+      background-color: #f5f5f5;
     }
 
     .btn-group {
       display: flex;
       justify-content: space-between;
-      margin-top: 20px;
-      flex-wrap: wrap;
       gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 15px;
     }
 
     button {
       flex: 1;
-      padding: 10px;
+      padding: 12px;
       font-size: 16px;
-      font-weight: 500;
+      font-weight: 600;
       border: none;
-      border-radius: 6px;
+      border-radius: 10px;
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: background-color 0.3s;
     }
 
-    .save {
-      background-color: #007BFF;
-      color: white;
-    }
+    .save { background-color: #1976d2; color: white; }
+    .save:hover { background-color: #1565c0; }
 
-    .save:hover {
-      background-color: #0056b3;
-    }
+    .cart { background-color: #2ecc71; color: white; }
+    .cart:hover { background-color: #27ae60; }
 
-    .cart {
-      background-color: #28a745;
-      color: white;
-    }
-
-    .cart:hover {
-      background-color: #218838;
-    }
-
-    .logout {
-      background-color: #dc3545;
-      color: white;
-    }
-
-    .logout:hover {
-      background-color: #c82333;
-    }
+    .logout { background-color: #e74c3c; color: white; }
+    .logout:hover { background-color: #c0392b; }
 
     .message {
-      color: #28a745;
-      margin-top: 10px;
       text-align: center;
-      font-weight: 500;
+      color: #2ecc71;
+      margin-top: 12px;
+      font-weight: 600;
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 600px) {
       .btn-group {
         flex-direction: column;
       }
 
-      button {
-        width: 100%;
+      nav {
+        flex-direction: column;
+        gap: 1em;
+        align-items: center;
       }
     }
   </style>
 </head>
 <body>
 
-  <div class="profile-container">
-    <h2>User Profile</h2>
+  <!-- Header + Nav Bar -->
+  <header>
+    <h1>Device Store</h1>
+  </header>
+  <nav>
+    <a href="homepage.html">Home</a>
+    <a href="contact.html">Contact</a>
+    <a href="cart.html">Shopping Cart</a>
+    <a href="_userProfile.html">Profile</a>
+  </nav>
 
-    <label for="username">Name</label>
-    <input type="text" id="username" placeholder="Enter your name" />
-    <div class="message" id="message"></div>
+  <!-- Profile Section -->
+  <div class="profile-wrapper">
+    <div class="profile-container">
+      <h2>User Profile</h2>
 
-    <div class="btn-group">
-      <button class="save" onclick="saveName()">Save</button>
-      <button class="cart" onclick="goToCart()">View Cart</button>
-      <button class="logout" onclick="logout()">Log Out</button>
+      <label for="username">Name</label>
+      <input type="text" id="username" />
+
+      <label for="email">Email</label>
+      <input type="email" id="email" />
+
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" />
+
+      <label for="age">Age</label>
+      <input type="number" id="age" min="1" max="120" />
+
+      <label for="status">Account Status</label>
+      <input type="text" id="status" readonly />
+
+      <div class="message" id="message"></div>
+
+      <div class="btn-group">
+        <button class="save" onclick="saveProfile()">Save</button>
+        <button class="cart" onclick="goToCart()">View Cart</button>
+        <button class="logout" onclick="logout()">Log Out</button>
+      </div>
     </div>
   </div>
 
   <script type="module">
     import { User } from './user.js';
+    import { userList } from './user-list.js';
 
-    // Load user from localStorage
     const user = User.load();
 
-    // Pre-fill the username field
-    const usernameInput = document.getElementById('username');
-    const messageDiv = document.getElementById('message');
-    usernameInput.value = user.name;
+    // Input fields
+    const nameField = document.getElementById('username');
+    const emailField = document.getElementById('email');
+    const phoneField = document.getElementById('phone');
+    const ageField = document.getElementById('age');
+    const statusField = document.getElementById('status');
+    const message = document.getElementById('message');
 
-    // Save the updated name to localStorage
-    window.saveName = function () {
-      const newName = usernameInput.value.trim();
-      if (newName) {
-        user.name = newName;
-        user.save();
-        messageDiv.textContent = "Name updated successfully!";
-        setTimeout(() => messageDiv.textContent = "", 3000);
-      }
+    // Fill inputs
+    if (!user.email) user.email = '';
+    if (!user.phone) user.phone = '';
+    if (!user.age) user.age = '';
+
+    nameField.value = user.name;
+    emailField.value = user.email;
+    phoneField.value = user.phone;
+    ageField.value = user.age;
+
+    const userInfo = userList.find(u => u.name === user.name);
+    statusField.value = userInfo?.isBlocked ? 'Blocked' : 'Active';
+
+    window.saveProfile = function () {
+      user.name = nameField.value.trim();
+      user.email = emailField.value.trim();
+      user.phone = phoneField.value.trim();
+      user.age = ageField.value.trim();
+
+      user.save();
+
+      message.textContent = "Profile updated successfully!";
+      setTimeout(() => message.textContent = '', 3000);
     };
 
-    // Redirect to cart page
-    window.goToCart = function () {
-      window.location.href = 'cart.html';
-    };
-
-    // Clear localStorage and redirect to homepage
-    window.logout = function () {
+    window.goToCart = () => window.location.href = 'cart.html';
+    window.logout = () => {
       localStorage.removeItem('user');
       window.location.href = 'homepage.html';
     };
   </script>
+
 </body>
 </html>

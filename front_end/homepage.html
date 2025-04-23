@@ -2,107 +2,117 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Device Store</title>
   <style>
-   body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f0f2f5;
-}
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f7f9;
+    }
 
-header {
-  background-color: #1a1a1a;
-  color: #fff;
-  padding: 1.5em 1em;
-  text-align: center;
-  font-size: 1.8em;
-  font-weight: bold;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-}
+    header {
+      background-color: #1a1a1a;
+      color: #fff;
+      padding: 1.5em 1em;
+      text-align: center;
+      font-size: 2em;
+      font-weight: bold;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
 
-nav {
-  background-color: #333;
-  display: flex;
-  justify-content: center;
-  gap: 2em;
-  padding: 1em;
-}
+    nav {
+      background-color: #333;
+      display: flex;
+      justify-content: center;
+      gap: 2em;
+      padding: 1em;
+    }
 
-nav a {
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-  padding: 0.5em 1em;
-  transition: background-color 0.3s, color 0.3s;
-  border-radius: 6px;
-}
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5em 1em;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      border-radius: 6px;
+    }
 
-nav a:hover {
-  background-color: #fff;
-  color: #000;
-}
+    nav a:hover {
+      background-color: #fff;
+      color: #000;
+    }
 
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1em;
-  padding: 1em;
-  background-color: #ffffff;
-  justify-content: center;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1em;
+      background-color: #fff;
+      padding: 1em;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
 
-.filters select {
-  padding: 0.6em;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  min-width: 150px;
-  font-size: 1em;
-}
+    .filters select {
+      padding: 0.6em 1em;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      min-width: 160px;
+      font-size: 1em;
+      transition: border-color 0.3s;
+    }
 
-.catalog {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1.5em;
-  padding: 2em;
-  max-width: 1200px;
-  margin: auto;
-}
+    .filters select:focus {
+      outline: none;
+      border-color: #007BFF;
+    }
 
-.product {
-  background-color: #ffffff;
-  padding: 1em;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  text-align: center;
-  display: grid;
-  transition: transform 0.2s, box-shadow 0.3s;
-}
+    .catalog {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5em;
+      padding: 2em;
+      max-width: 1200px;
+      margin: auto;
+      animation: fadeIn 0.8s ease;
+    }
 
-.product:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-.product img {
-  width: 100%;
-  height: auto;
-  border-radius: 6px;
-  margin-bottom: 0.5em;
-}
+    .product {
+      background-color: #ffffff;
+      padding: 1em;
+      border-radius: 16px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: grid;
+    }
 
+    .product:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .product img {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      margin-bottom: 0.7em;
+    }
   </style>
 </head>
 <body>
   <header>
     <h1>Device Store</h1>
   </header>
+
   <nav>
-    <a href="#">Home</a>
-    <a href="#">Mobiles</a>
-    <a href="#">Laptops</a>
+    <a href="homepage.html">Home</a>
     <a href="contact.html">Contact</a>
     <a href="cart.html">Shopping Cart</a>
   </nav>
@@ -130,70 +140,65 @@ nav a:hover {
   <section class="catalog" id="catalog">
     <!-- products will be rendered here -->
   </section>
-
   <script type="module">
+    // Import the product list from an external JavaScript file
     import { productList } from './productsdata.js';
 
-    // List of test users for login verification (hidden from UI)
-    const testUsers = [
-      { fullName: 'John Doe', email: 'john@example.com', password: 'password123' },
-      { fullName: 'Jane Smith', email: 'jane@example.com', password: 'password456' },
-      { fullName: 'Alice Johnson', email: 'alice@example.com', password: 'password789' }
-    ];
-
-    // Save the test users in localStorage for easy access during login verification in auth.html
-    localStorage.setItem("testUsers", JSON.stringify(testUsers));
-
-    // Rendering products script
+    // Get the catalog section where products will be displayed
     const catalog = document.getElementById("catalog");
 
+    // Function to display products in the catalog
     function displayProducts(products) {
+      // Clear the catalog content
       catalog.innerHTML = '';
 
+      // Loop through the products and render each one
       products.forEach(product => {
-        const productElement = product.render();
-        catalog.appendChild(productElement);
+        const productElement = product.render(); // Render the product as an HTML element
+        catalog.appendChild(productElement); // Add the product to the catalog
       });
 
-      // Add click listeners to "Details" buttons
+      // Add event listeners to all "Details" buttons
       document.querySelectorAll(".details-btn").forEach(button => {
         button.addEventListener("click", (e) => {
-          const productId = e.target.dataset.id;
-          const selectedProduct = productList.find(p => p.product_id.toString() === productId);
-          localStorage.setItem("selectedProduct", JSON.stringify(selectedProduct));
-          console.log(selectedProduct.product_specs);
-          window.location.href = "product.html";
+          const productId = e.target.dataset.id; // Get the product ID from the button's data attribute
+          const selectedProduct = productList.find(p => p.product_id.toString() === productId); // Find the selected product
+          localStorage.setItem("selectedProduct", JSON.stringify(selectedProduct)); // Save the product to localStorage
+          window.location.href = "product.html"; // Redirect to the product details page
         });
       });
     }
 
+    // Get the filter dropdown elements
     const brandFilter = document.getElementById("brandFilter");
     const typeFilter = document.getElementById("typeFilter");
     const priceFilter = document.getElementById("priceFilter");
 
+    // Function to filter products based on selected criteria
     function filterProducts() {
-      const brand = brandFilter.value;
-      const type = typeFilter.value;
-      const price = priceFilter.value;
+      const brand = brandFilter.value; // Get the selected brand
+      const type = typeFilter.value; // Get the selected type
+      const price = priceFilter.value; // Get the selected price range
 
+      // Filter the product list based on the selected criteria
       const filtered = productList.filter(p => {
-        const brandMatch = brand === "all" || p.product_brand === brand;
-        const typeMatch = type === "all" || p.product_type === type;
-        const priceMatch = price === "all" || p.priceCategory === price;
-        return brandMatch && typeMatch && priceMatch;
+        const brandMatch = brand === "all" || p.product_brand === brand; // Match brand
+        const typeMatch = type === "all" || p.product_type === type; // Match type
+        const priceMatch = price === "all" || p.priceCategory === price; // Match price range
+        return brandMatch && typeMatch && priceMatch; // Return true if all criteria match
       });
 
+      // Display the filtered products
       displayProducts(filtered);
     }
 
+    // Display all products initially
     displayProducts(productList);
 
+    // Add event listeners to filter dropdowns to update the catalog on change
     brandFilter.addEventListener("change", filterProducts);
     typeFilter.addEventListener("change", filterProducts);
     priceFilter.addEventListener("change", filterProducts);
   </script>
 </body>
 </html>
-
-
-
