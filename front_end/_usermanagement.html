@@ -56,40 +56,49 @@
 <div id="userListContainer"></div>
 
 <script type="module">
-    import { userList } from './userdata.js';
+    function getUserList() {
+    return JSON.parse(localStorage.getItem("userList")) || [];
+}
 
-    function displayUsers() {
-        const container = document.getElementById("userListContainer");
-        container.innerHTML = "";
+function displayUsers() {
+    const container = document.getElementById("userListContainer");
+    container.innerHTML = "";
 
-        userList.forEach((user, index) => {
-            const card = document.createElement("div");
-            card.className = "user-card";
+    const userList = getUserList();
 
-            card.innerHTML = `
-                <h3>${user.name} (ID: ${user.id})</h3>
-                <p>Status: ${user.isBlocked ? "<strong style='color:red'>Blocked</strong>" : "Active"}</p>
-                <button onclick="blockUser(${index})">${user.isBlocked ? "Unblock" : "Block"}</button>
-                <button onclick="deleteUser(${index})">Delete</button>
-            `;
+    userList.forEach((user, index) => {
+        const card = document.createElement("div");
+        card.className = "user-card";
 
-            container.appendChild(card);
-        });
-    }
+        card.innerHTML = `
+            <h3>${user.name} (ID: ${user.id})</h3>
+            <p>Status: ${user.isBlocked ? "<strong style='color:red'>Blocked</strong>" : "Active"}</p>
+            <button onclick="blockUser(${index})">${user.isBlocked ? "Unblock" : "Block"}</button>
+            <button onclick="deleteUser(${index})">Delete</button>
+        `;
 
-    window.blockUser = function(index) {
-        userList[index].isBlocked = !userList[index].isBlocked;
-        displayUsers();
-    };
+        container.appendChild(card);
+    });
+}
 
-    window.deleteUser = function(index) {
-        if (confirm("Are you sure you want to delete this user?")) {
-            userList.splice(index, 1);
-            displayUsers();
-        }
-    };
-
+window.blockUser = function(index) {
+    const userList = getUserList();
+    userList[index].isBlocked = !userList[index].isBlocked;
+    localStorage.setItem("userList", JSON.stringify(userList));
     displayUsers();
+};
+
+window.deleteUser = function(index) {
+    const userList = getUserList();
+    if (confirm("Are you sure you want to delete this user?")) {
+        userList.splice(index, 1);
+        localStorage.setItem("userList", JSON.stringify(userList));
+        displayUsers();
+    }
+};
+
+displayUsers();
+
 </script>
 
 </body>

@@ -146,46 +146,62 @@
 
     // Signup handler
     signupForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const name = document.getElementById("signupName").value;
-      const email = document.getElementById("signupEmail").value;
-      const password = document.getElementById("signupPassword").value;
-      const role = document.querySelector('input[name="signupRole"]:checked').value;
+  e.preventDefault();
+  const name = document.getElementById("signupName").value;
+  const email = document.getElementById("signupEmail").value;
+  const password = document.getElementById("signupPassword").value;
+  const role = document.querySelector('input[name="signupRole"]:checked').value;
 
-      const userData = { name, email, password, role };
-      localStorage.setItem("userData", JSON.stringify(userData));
+  const newUser = { id: `u${Date.now()}`, name, email, password, role, isBlocked: false };
 
-      if (role === "user") {
-        window.location.href = "homepage.html";
-      } else {
-        alert("Admin signup successful! You can now log in.");
-        signupForm.reset();
-        signupForm.classList.remove("active");
-        loginForm.classList.add("active");
-        formTitle.textContent = "Login";
-        switchLink.textContent = "Don't have an account? Sign up";
-      }
-    });
+  const listKey = role === "user" ? "userList" : "adminList";
+  const existingList = JSON.parse(localStorage.getItem(listKey)) || [];
+
+  // Check if the email already exists
+  const alreadyExists = existingList.some(u => u.email === email);
+  if (alreadyExists) {
+    alert("Email already registered.");
+    return;
+  }
+
+  existingList.push(newUser);
+  localStorage.setItem(listKey, JSON.stringify(existingList));
+  localStorage.setItem("userData", JSON.stringify(newUser));
+
+  if (role === "user") {
+    window.location.href = "homepage.html";
+  } else {
+    window.location.href = "_productsmanager.html";
+  }
+});
+
 
     // Login handler
     loginForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
-      const role = document.querySelector('input[name="loginRole"]:checked').value;
+  e.preventDefault();
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+  const role = document.querySelector('input[name="loginRole"]:checked').value;
 
-      const stored = JSON.parse(localStorage.getItem("userData"));
-      if (stored && stored.email === email && stored.password === password && stored.role === role) {
-        alert("Login successful!");
-        if (role === "user") {
-          window.location.href = "homepage.html";
-        } else {
-          alert("Welcome, Admin!");
-        }
-      } else {
-        alert("Invalid credentials or role.");
-      }
-    });
+  const listKey = role === "user" ? "userList" : "adminList";
+  const list = JSON.parse(localStorage.getItem(listKey)) || [];
+
+  const user = list.find(u => u.email === email && u.password === password);
+
+  if (user) {
+    localStorage.setItem("userData", JSON.stringify(user));
+    alert("Login successful!");
+    if (role === "user") {
+      window.location.href = "homepage.html";
+    } else {
+      window.location.href = "_productsmanager.html";
+    }
+  } else {
+    alert("Invalid credentials or role.");
+  }
+});
+
+
 
      // Retrieve the test users stored in localStorage
   const testUsers = JSON.parse(localStorage.getItem("testUsers"));
@@ -202,8 +218,9 @@ function handleLogin() {
     alert("Login successful!");
     window.location.href = "homepage.html"; // Redirect to homepage
   } else {
-    alert("Invalid credentials. Please try again.");
+    window.location.href = "_productsmanager.html";
   }
+
 }
   </script>
 </body>

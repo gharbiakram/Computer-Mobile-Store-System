@@ -113,7 +113,16 @@ form button {
     <button class="nav-button" onclick="window.location.href='_usermanagement.html'">Go to User Management</button>
 </header>
 
-
+<script>
+    const user = JSON.parse(localStorage.getItem("userData"));
+  
+    // Redirect if not logged in or not admin
+    if (!user || user.role !== "admin") {
+      alert("Unauthorized. Please log in as admin.");
+      window.location.href = "auth.html";
+    }
+  </script>
+  
 <section>
     <button class="op-btn" onclick="toggleForm('add')">Add Product</button>
     <button class="op-btn" onclick="toggleForm('remove')">Remove Product</button>
