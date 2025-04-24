@@ -190,56 +190,57 @@
       <div class="btn-group">
         <button class="save" onclick="saveProfile()">Save</button>
         <button class="cart" onclick="goToCart()">View Cart</button>
-        <button class="logout" onclick="logout()">Log Out</button>
+        <button class="logout" onclick="logout()">Home</button>
       </div>
-    </div>
-  </div>
+        </div>
+      </div>
 
-  <script type="module">
-    import { User } from './user.js';
-    import { userList } from './user-list.js';
+      <script>
+        const user = JSON.parse(localStorage.getItem('user')) || {};
+      
+        const nameField = document.getElementById('username');
+        const emailField = document.getElementById('email');
+        const phoneField = document.getElementById('phone');
+        const ageField = document.getElementById('age');
+        const statusField = document.getElementById('status');
+        const message = document.getElementById('message');
+      
+        if (!user.email) user.email = '';
+        if (!user.phone) user.phone = '';
+        if (!user.age) user.age = '';
+      
+        nameField.value = user.name;
+        emailField.value = user.email;
+        phoneField.value = user.phone;
+        ageField.value = user.age;
+      
+        
+        const userInfo = userList.find(u => u.name === user.name);
+        statusField.value = userInfo?.isBlocked ? 'Blocked' : 'Active';
+        statusField.value = 'Active';
+      
+        function saveProfile() {
+          user.name = nameField.value.trim();
+          user.email = emailField.value.trim();
+          user.phone = phoneField.value.trim();
+          user.age = ageField.value.trim();
+      
+          localStorage.setItem('user', JSON.stringify(user));
+      
+          message.textContent = "Profile updated successfully!";
+          setTimeout(() => message.textContent = '', 3000);
+        }
+      
+        function goToCart() {
+          window.location.href = './cart.html';
+        }
+      
+        function logout() {
+          localStorage.removeItem('user');
+          window.location.href = './homepage.html';
+        }
+      </script>
+      
 
-    const user = User.load();
-
-    // Input fields
-    const nameField = document.getElementById('username');
-    const emailField = document.getElementById('email');
-    const phoneField = document.getElementById('phone');
-    const ageField = document.getElementById('age');
-    const statusField = document.getElementById('status');
-    const message = document.getElementById('message');
-
-    // Fill inputs
-    if (!user.email) user.email = '';
-    if (!user.phone) user.phone = '';
-    if (!user.age) user.age = '';
-
-    nameField.value = user.name;
-    emailField.value = user.email;
-    phoneField.value = user.phone;
-    ageField.value = user.age;
-
-    const userInfo = userList.find(u => u.name === user.name);
-    statusField.value = userInfo?.isBlocked ? 'Blocked' : 'Active';
-
-    window.saveProfile = function () {
-      user.name = nameField.value.trim();
-      user.email = emailField.value.trim();
-      user.phone = phoneField.value.trim();
-      user.age = ageField.value.trim();
-
-      user.save();
-
-      message.textContent = "Profile updated successfully!";
-      setTimeout(() => message.textContent = '', 3000);
-    };
-
-    window.goToCart = () => window.location.href = 'cart.html';
-    window.logout = () => {
-      localStorage.removeItem('user');
-      window.location.href = 'homepage.html';
-    };
-  </script>
-
-</body>
-</html>
+    </body>
+    </html>
