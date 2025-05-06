@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Login / Signup</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -144,85 +145,86 @@
       }
     });
 
+    // hash function using bcryptjs
+    function hashPassword(password) {
+      const salt = bcrypt.genSaltSync(10);
+      return bcrypt.hashSync(password, salt);
+    }
+
     // Signup handler
     signupForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const name = document.getElementById("signupName").value;
-  const email = document.getElementById("signupEmail").value;
-  const password = document.getElementById("signupPassword").value;
-  const role = document.querySelector('input[name="signupRole"]:checked').value;
+      e.preventDefault();
+      const name = document.getElementById("signupName").value;
+      const email = document.getElementById("signupEmail").value;
+      const password = document.getElementById("signupPassword").value;
+      const role = document.querySelector('input[name="signupRole"]:checked').value;
 
-  const newUser = { id: `u${Date.now()}`, name, email, password, role, isBlocked: false };
+      const newUser = { id: `u${Date.now()}`, name, email, password, role, isBlocked: false };
 
-  const listKey = role === "user" ? "userList" : "adminList";
-  const existingList = JSON.parse(localStorage.getItem(listKey)) || [];
+      const listKey = role === "user" ? "userList" : "adminList";
+      const existingList = JSON.parse(localStorage.getItem(listKey)) || [];
 
-  // Check if the email already exists
-  const alreadyExists = existingList.some(u => u.email === email);
-  if (alreadyExists) {
-    alert("Email already registered.");
-    return;
-  }
+      // Check if the email already exists
+      const alreadyExists = existingList.some(u => u.email === email);
+      if (alreadyExists) {
+        alert("Email already registered.");
+        return;
+      }
 
-  existingList.push(newUser);
-  localStorage.setItem(listKey, JSON.stringify(existingList));
-  localStorage.setItem("userData", JSON.stringify(newUser));
+      existingList.push(newUser);
+      localStorage.setItem(listKey, JSON.stringify(existingList));
+      localStorage.setItem("userData", JSON.stringify(newUser));
 
-  if (role === "user") {
-    window.location.href = "homepage.html";
-  } else {
-    window.location.href = "_productsmanager.html";
-  }
-});
-
+      if (role === "user") {
+        window.location.href = "homepage.html";
+      } else {
+        window.location.href = "_productsmanager.html";
+      }
+    });
 
     // Login handler
     loginForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const email = document.getElementById("loginEmail").value;
-  const password = document.getElementById("loginPassword").value;
-  const role = document.querySelector('input[name="loginRole"]:checked').value;
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+      const role = document.querySelector('input[name="loginRole"]:checked').value;
 
-  const listKey = role === "user" ? "userList" : "adminList";
-  const list = JSON.parse(localStorage.getItem(listKey)) || [];
+      const listKey = role === "user" ? "userList" : "adminList";
+      const list = JSON.parse(localStorage.getItem(listKey)) || [];
 
-  const user = list.find(u => u.email === email && u.password === password);
+      const user = list.find(u => u.email === email && u.password === password);
 
-  if (user) {
-    localStorage.setItem("userData", JSON.stringify(user));
-    alert("Login successful!");
-    if (role === "user") {
-      window.location.href = "homepage.html";
-    } else {
-      window.location.href = "_productsmanager.html";
+      if (user) {
+        localStorage.setItem("userData", JSON.stringify(user));
+        alert("Login successful!");
+        if (role === "user") {
+          window.location.href = "homepage.html";
+        } else {
+          window.location.href = "_productsmanager.html";
+        }
+      } else {
+        alert("Invalid credentials or role.");
+      }
+    });
+
+    // Retrieve the test users stored in localStorage
+    const testUsers = JSON.parse(localStorage.getItem("testUsers"));
+
+    // Function to handle the login process
+    function handleLogin() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      const user = testUsers.find(u => u.email === email && u.password === password);
+
+      if (user) {
+        localStorage.setItem("userData", JSON.stringify(user));
+        alert("Login successful!");
+        window.location.href = "homepage.html";
+      } else {
+        window.location.href = "_productsmanager.html";
+      }
     }
-  } else {
-    alert("Invalid credentials or role.");
-  }
-});
-
-
-
-     // Retrieve the test users stored in localStorage
-  const testUsers = JSON.parse(localStorage.getItem("testUsers"));
-
-// Function to handle the login process
-function handleLogin() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  const user = testUsers.find(u => u.email === email && u.password === password);
-
-  if (user) {
-    localStorage.setItem("userData", JSON.stringify(user)); // Store user data in localStorage
-    alert("Login successful!");
-    window.location.href = "homepage.html"; // Redirect to homepage
-  } else {
-    window.location.href = "_productsmanager.html";
-  }
-
-}
   </script>
 </body>
 </html>
-
