@@ -160,6 +160,13 @@
       totalDiv.textContent = `Total: $${total}`;
       cartContainer.appendChild(totalDiv);
 
+      // Save order summary to localStorage
+      const shippingFee = 20; // You can adjust this as needed
+      localStorage.setItem("orderSummary", JSON.stringify({
+        subtotal: total,
+        shipping: shippingFee
+      }));
+
       const checkoutBtn = document.createElement('div');
       checkoutBtn.className = 'checkout-container';
       checkoutBtn.innerHTML = `
@@ -176,9 +183,9 @@
       document.querySelectorAll('.qty-input').forEach(input => {
         input.addEventListener('change', updateQuantity);
       });
-    }
+        }
 
-    function removeItem(e) {
+        function removeItem(e) {
       const index = e.target.dataset.index;
       user.removeFromCart(index);
       renderCart();

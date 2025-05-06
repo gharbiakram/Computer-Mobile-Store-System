@@ -145,6 +145,20 @@
       from { opacity: 0; transform: scale(0.8); }
       to { opacity: 1; transform: scale(1); }
     }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    ul li {
+      margin-bottom: 0.5em;
+    }
+
+    h3 {
+      margin-top: 1em;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -176,22 +190,37 @@
         <input type="text" id="zip" value="10001" pattern="\d{5}" required>
         <small class="error" id="zipError"></small>
       </div>
-      
+
       <div>
-        <label for="cardNumber">Card Number</label>
-        <input type="text" id="cardNumber" value="4111111111111111" pattern="\d{16}" required>
+        <label for="paymentMethod">Payment Method</label>
+        <select id="paymentMethod" required>
+          <option value="card" selected>Credit/Debit Card</option>
+          <option value="cod">Cash on Delivery</option>
+        </select>
       </div>
-      
+
+      <div id="cardDetails">
+        <div>
+          <label for="cardNumber">Card Number</label>
+          <input type="text" id="cardNumber" value="4111111111111111" pattern="\d{16}">
+        </div>
+        
+        <div>
+          <label for="expiration">Expiration Date</label>
+          <input type="text" id="expiration" value="12/26" pattern="\d{2}/\d{2}">
+        </div>
+        
+        <div>
+          <label for="cvv">CVV</label>
+          <input type="text" id="cvv" value="123" pattern="\d{3}">
+        </div>
+      </div>
+
       <div>
-        <label for="expiration">Expiration Date</label>
-        <input type="text" id="expiration" value="12/26" pattern="\d{2}/\d{2}" required>
+        <h3>Order Summary</h3>
+        <ul id="summaryList"></ul>
       </div>
-      
-      <div>
-        <label for="cvv">CVV</label>
-        <input type="text" id="cvv" value="123" pattern="\d{3}" required>
-      </div>
-      
+
       <div class="btn-container">
         <button type="button" class="btn-secondary" onclick="location.href='cart.html'">Go to Cart</button>
         <button type="button" class="btn-neutral" onclick="location.href='homepage.html'">Home</button>
@@ -214,12 +243,25 @@
   </div>
 
   <script>
-    document.getElementById("checkoutForm").addEventListener("submit", function (e) {
+    const checkoutForm = document.getElementById("checkoutForm");
+    const zipInput = document.getElementById("zip");
+    const zipError = document.getElementById("zipError");
+    const paymentMethod = document.getElementById("paymentMethod");
+    const cardDetails = document.getElementById("cardDetails");
+  
+    paymentMethod.addEventListener("change", () => {
+      if (paymentMethod.value === "cod") {
+        cardDetails.style.display = "none";
+        [...cardDetails.querySelectorAll("input")].forEach(input => input.disabled = true);
+      } else {
+        cardDetails.style.display = "block";
+        [...cardDetails.querySelectorAll("input")].forEach(input => input.disabled = false);
+      }
+    });
+  
+    checkoutForm.addEventListener("submit", function (e) {
       e.preventDefault();
-
-      const zipInput = document.getElementById("zip");
-      const zipError = document.getElementById("zipError");
-
+  
       if (!/^\d{5}$/.test(zipInput.value)) {
         zipError.textContent = "ZIP code must be exactly 5 digits.";
         zipInput.focus();
@@ -227,22 +269,43 @@
       } else {
         zipError.textContent = "";
       }
-
-      // Show success modal
+  
       const modal = document.getElementById("successModal");
       modal.style.display = "flex";
-
-      // Optional: clear form or cart after some time
+  
       setTimeout(() => {
         modal.style.display = "none";
-        // Redirect if needed:
-        // window.location.href = 'confirmation.html';
       }, 3000);
     });
-  </script>
+  
+    // Trigger on load to show/hide card section accordingly
+    paymentMethod.dispatchEvent(new Event("change"));
+  
+    // Load order summary from localStorage
+    window.onload = function() {
+    
+    const orderSummary = JSON.parse(localStorage.getItem('orderSummary'));
 
+    
+    const summaryList = document.getElementById("summaryList");
+
+    // Check if the orderSummary exists and display the values
+    if (orderSummary) {
+      const subtotal = orderSummary.subtotal || 0;
+      const shipping = orderSummary.shipping || 0;
+      const total = orderSummary.subtotal+orderSummary.shipping || 0;
+
+      
+      summaryList.innerHTML = `
+        <li>Subtotal: $${subtotal.toFixed(2)}</li>
+        <li>Shipping: $${shipping.toFixed(2)}</li>
+        <li><strong>Total: $${total.toFixed(2)}</strong></li>
+      `;
+    } else {
+      
+      summaryList.innerHTML = "<li>No items in the cart.</li>";
+    }
+  };
+  </script>
 </body>
 </html>
-
-
-
